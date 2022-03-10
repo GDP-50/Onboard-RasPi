@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 import serial.tools.list_ports
 from pynmeagps import NMEAReader
 import re
