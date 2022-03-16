@@ -1,7 +1,7 @@
-from asyncio.windows_events import NULL
 import serial.tools.list_ports
 from pynmeagps import NMEAReader
 import re
+import sys
 
 
 class COMPorts:
@@ -44,7 +44,11 @@ class Object:
 for port in COMPorts.get_com_ports().data:
     print(port.device)
     print(port.description)
+
+if sys.platform == "windows":
     gps_port = COMPorts.get_device_by_description(description="USB Serial Device")
+else:
+    gps_port = COMPorts.get_device_by_description(description="u-blox 7 - GPS/GNSS Receiver")
 
 
 gps = serial.Serial(gps_port, 9600, timeout=1)
@@ -58,8 +62,10 @@ try:
         line = line.decode()
         if re.match("^\$GPRMC", line):
             msg = NMEAReader.parse(line)
-            print("Lat: %f" % msg.lat)
-            print("Lon: %f" % msg.lon)
-
+            try:
+                print("Lat: %f" % msg.lat)
+                print("Lon: %f" % msg.lon)
+            except:
+                print("not connected yet")
 except KeyboardInterrupt:
     print("Interrupted")
