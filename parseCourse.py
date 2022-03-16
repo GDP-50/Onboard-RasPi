@@ -1,76 +1,54 @@
+from ctypes import *
+from json import load
 import numpy as np
-def loadCourse(filename):
-    bunkers_py = []
-    green_py = []
-    bunkerCount = -1
-    with open(filename, "r") as f:
-        lines = f.readlines()
-        for i, line in enumerate(lines):
-            line = line.strip()
-            line = line.split(" ")
-            if line[0] == "Bunker":
-                bunkerActive = True
-                greenActive = False
-                teeActive = False
-                points = []
-                bunkers_py.append(points)
-                bunkerCount += 1
-            elif line[0] == "Green":
-                bunkerActive = False
-                greenActive = True
-                teeActive = False
-                points = []
-            elif line[0] == "Tee":
-                bunkerActive = False
-                greenActive = False
-                teeActive = True
-            elif line[0] == "p":
-                points.append([float(line[1]), float(line[2])])
-                if bunkerActive:
-                    bunkers_py[bunkerCount] = points
-                elif greenActive:
-                    green_py.append([float(line[1]), float(line[2])])
-                elif teeActive:
-                    tee = [float(line[1]), float(line[2])]
-            else:
-                print("some unexpected line beginning")
-                continue
+from numpy.ctypeslib import ndpointer
+lib_file = "/mnt/c/Users/Rufus Vijayaratnam/Dev/cPyTest/clib.so"
+c_funcs = cdll.LoadLibrary(lib_file)
+loadCourse = c_funcs.loadCourse
+loadCourse.argtypes = [c_char_p(),
+                       POINTER(c_int),
+                       POINTER(c_int),
+                       ndpointer(dtype=c_int, ndim=1, flags='C_CONTIGUOUS')]
 
-    bunkers = np.array(np.array([np.array(bunker) for bunker in bunkers_py], dtype=object), dtype=object)
-    green = np.array(green_py)
-    tee = np.array(tee)
+prepareCourse = c_funcs.prepareCourse
+prepareCourse.argtypes = [c_char_p(),
+                          c_int,
+                          ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS'),
+                          c_int,
+                          c_int,
+                          ndpointer(dtype=c_double, ndim=3, flags='C_CONTIGUOUS'),
+                          ndpointer(dtype=c_int, ndim=1, flags='C_CONTIGUOUS'),
+                          ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
+                          POINTER(c_double)]
 
-    deg2meters = 2 * np.pi * 6371000 / 360
+printMat = c_funcs.print_matrix
+printMat.argtypes = [c_int, c_int, ndpointer(dtype=c_int, ndim=2, flags="C_CONTIGUOUS")]
 
-    for i, greenPoint in enumerate(green):
-        rel = tee - greenPoint
-        green[i] = rel * deg2meters
+mat = np.zeros(shape=(5,5)).astype(c_int)
+mat[0][3] = 10
+mat[2][2] = 4
+print("printing")
+print(mat)
+print("done printing")
+c_int_p = POINTER(c_int)
+mat_p = np.ascontiguousarray(mat).ctypes.data_as(POINTER(c_int))
 
-    for i, bunker in enumerate(bunkers):
-        for j, bunkerPoint in enumerate(bunker):
-            rel = tee - bunkerPoint
-            bunkers[i][j] = rel * deg2meters
+printMat(5,5, mat)
 
-    largestVal = 0
-    for bunker in bunkers:
-        max = np.max(bunker)
-        if max > largestVal:
-            largestVal = max
+coursePath = "green3.poly"
+greenSize = c_int(0)
+greenPos = np.zeros(3, dtype=c_double)
+bunkerCount = c_int(0)
+bunkerSizes = np.zeros(128, dtype=c_int)
 
-    max = np.max(green)
-    if max > largestVal:
-        largestVal = max
-    max = np.max(tee)
-    if max > largestVal:
-        largestVal = max
+loadCourse(c_char_p(coursePath.encode("utf-8")), byref(greenSize), byref(bunkerCount), bunkerSizes)
 
 
-    for i, bunker in enumerate(bunkers):
-        bunkers[i] /= 0.5 * largestVal
+scaleVal = c_double(0)
+green = np.ndarray(dtype=c_double, shape=(greenSize.value, 3))
+bunkerMaxSize = np.max(bunkerSizes)
+bunkers = np.ndarray(shape=(bunkerCount.value, bunkerMaxSize, 3), dtype=c_double)
+#bunkers = np.array(np.array([np.array(bunker) for bunker in bunkers_py], dtype=object), dtype=object)
+teePos = np.zeros(3, dtype=c_double)
 
-    green /= 0.5 * largestVal
-    return green, bunkers
-
-
-
-green, bunkers = loadCourse("Hole 1.txt")
+prepareCourse(coursePath.encode("utf-8"), greenSize.value, green, bunkerCount.value, bunkerMaxSize, bunkers, bunkerSizes, teePos, byref(scaleVal))
