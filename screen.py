@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from parseCourse import loadCourse
+import latch-control
 
 
 class Window(QWidget):
