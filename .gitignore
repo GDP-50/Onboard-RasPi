@@ -2,3 +2,4 @@ venv/
 onboardenv/
 .vscode/
 __pycache__/
+c_dll.so
