@@ -1,7 +1,19 @@
 import bluetooth
+server_sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
 
-onboard_addr = "DC:A6:32:F9:18:20"
 port = 1
-socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-socket.connect((onboard_addr, port))
-socket.send('\x1A')
+server_sock.bind(("", port))
+server_sock.listen(1)
+
+client_sock,address = server_sock.accept()
+print("Accepted connection from ", address)
+
+
+while True:
+    data = client_sock.recv(1024)
+    if not data:
+        break
+    print("Received", data)
+
+client_sock.close()
+server_sock.close()
