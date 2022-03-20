@@ -45,7 +45,7 @@ for port in COMPorts.get_com_ports().data:
     print(port.device)
     print(port.description)
 
-if sys.platform == "windows":
+if sys.platform == "win32":
     gps_port = COMPorts.get_device_by_description(description="USB Serial Device")
 else:
     gps_port = COMPorts.get_device_by_description(description="u-blox 7 - GPS/GNSS Receiver")

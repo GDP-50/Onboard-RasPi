@@ -1,8 +1,7 @@
 from ctypes import *
-from json import load
 import numpy as np
 from numpy.ctypeslib import ndpointer
-lib_file = "/mnt/c/Users/Rufus Vijayaratnam/Dev/cPyTest/clib.so"
+lib_file = "c_dll.so"
 c_funcs = cdll.LoadLibrary(lib_file)
 loadCourse = c_funcs.loadCourse
 loadCourse.argtypes = [c_char_p(),
