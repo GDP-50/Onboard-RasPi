@@ -1,40 +1,9 @@
-from ctypes import *
 import numpy as np
-from numpy.ctypeslib import ndpointer
-lib_file = "c_dll.so"
-c_funcs = cdll.LoadLibrary(lib_file)
-loadCourse = c_funcs.loadCourse
-loadCourse.argtypes = [c_char_p(),
-                       POINTER(c_int),
-                       POINTER(c_int),
-                       ndpointer(dtype=c_int, ndim=1, flags='C_CONTIGUOUS')]
+from ctypes import *
+from C_wrappers import *
 
-prepareCourse = c_funcs.prepareCourse
-prepareCourse.argtypes = [c_char_p(),
-                          c_int,
-                          ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS'),
-                          c_int,
-                          c_int,
-                          ndpointer(dtype=c_double, ndim=3, flags='C_CONTIGUOUS'),
-                          ndpointer(dtype=c_int, ndim=1, flags='C_CONTIGUOUS'),
-                          ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
-                          POINTER(c_double)]
 
-printMat = c_funcs.print_matrix
-printMat.argtypes = [c_int, c_int, ndpointer(dtype=c_int, ndim=2, flags="C_CONTIGUOUS")]
-
-mat = np.zeros(shape=(5,5)).astype(c_int)
-mat[0][3] = 10
-mat[2][2] = 4
-print("printing")
-print(mat)
-print("done printing")
-c_int_p = POINTER(c_int)
-mat_p = np.ascontiguousarray(mat).ctypes.data_as(POINTER(c_int))
-
-printMat(5,5, mat)
-
-coursePath = "green3.poly"
+coursePath = "Hole 1.txt"
 greenSize = c_int(0)
 greenPos = np.zeros(3, dtype=c_double)
 bunkerCount = c_int(0)

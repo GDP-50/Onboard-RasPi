@@ -1,8 +1,6 @@
+from C_wrappers import *
 from ctypes import *
 
-dll = cdll.LoadLibrary("c_dll.so")
-
-setupI2C = dll.setupI2C
-setupI2C.argtypes = [c_int]
-setMotorSpeed = dll.setMotorSpeed
-setMotorSpeed.argtypes = [POINTER(c_long)]
+MD25Address = c_int(0x58)
+setupI2C(MD25Address)
+setMotorSpeed(100, 200)

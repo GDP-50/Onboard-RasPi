@@ -59,3 +59,10 @@ void encoderValues(long* encoder1, long* encoder2) {
 	    *encoder2 = (buffer[4] <<24) + (buffer[5] << 16) + (buffer[6] << 8) + buffer[7];
     }
 }
+
+void resetEncoders(void) {
+	buffer[0] = 16;												// Command register
+	buffer[1] = 32;												// command to set decoders back to zero
+	writeI2C(2);
+	printf("Encoders have been reset\n");
+}
