@@ -88,10 +88,8 @@ void prepareCourse(const char * path, int greenSize, double green[greenSize][3],
                 green[coordCount][0] = (double)c1;
                 green[coordCount][1] = (double)c2;
             } else if (bunkerActive) {
-                printf("C1: %lf, c2: %lf\n", c1, c2);
                 bunkers[bunker - 1][coordCount][0] = (double)c1;
                 bunkers[bunker - 1][coordCount][1] = (double)c2;
-                printf("set to %lf and %lf\n", bunkers[bunker - 1][coordCount][0], bunkers[bunker - 1][coordCount][1]);
             } else if (teeActive) {
                 teePos[0] = (double)c1;
                 teePos[1] = (double)c2;
@@ -121,7 +119,7 @@ void prepareCourse(const char * path, int greenSize, double green[greenSize][3],
         gpy = green[i][1];
         gpz = 0.0;
         relx = teex - gpx;
-        relz = teez - gpz;
+        rely = teey - gpy;
         relz = teez - gpz;
         green[i][0] = (double)(relx * deg2meters);
         green[i][1] = (double)(rely * deg2meters);
@@ -136,7 +134,7 @@ void prepareCourse(const char * path, int greenSize, double green[greenSize][3],
             bpy = bunkers[i][j][1];
             bpz = 0.0;
             relx = teex - bpx;
-            relz = teez - bpz;
+            rely = teey - bpy;
             relz = teez - bpz;
             bunkers[i][j][0] = (double)(relx * deg2meters);
             bunkers[i][j][1] = (double)(rely * deg2meters);

@@ -1,4 +1,3 @@
-from base64 import encode
 from ctypes import *
 import numpy as np
 from numpy.ctypeslib import ndpointer
@@ -50,5 +49,25 @@ setMotorSpeed.argtypes = [c_int, c_int]
 encoderValues = c_funcs.encoderValues
 encoderValues.argtypes = [POINTER(c_long), POINTER(c_long)]
 
-## RESET ENCODER VALUES ##
-resetEncoderValues = c_funcs.resetEncoderValues
+## RESET ENCODERS ##
+resetEncoders = c_funcs.resetEncoders
+
+## POLYGON CENTROID ##
+polygonCentroid = c_funcs.polygonCentroid
+polygonCentroid.argtypes = [c_int, 
+                            ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS'), 
+                            ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')]
+
+## POINT IN POLYGON ##
+pointInPolygon = c_funcs.pointInPolygon
+pointInPolygon.argtypes = [c_int,
+                           ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS'),
+                           ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')]
+pointInPolygon.restype = c_bool
+
+## VECTOR POLYGON INTERSECTION ##
+vecPolygonIntersect = c_funcs.vecPolygonIntersect
+vecPolygonIntersect.argtypes = [ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
+                                ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
+                                c_int,
+                                ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS')]

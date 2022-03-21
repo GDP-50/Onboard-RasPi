@@ -11,5 +11,5 @@ int readI2C(int length);
 int writeI2C(int length);
 void setMotorSpeed(int speed1, int speed2);
 void encoderValues(long* encoder1, long* encoder2);
-void resetEncoders()
+void resetEncoders();
 #endif
