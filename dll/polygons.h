@@ -12,8 +12,8 @@ void polygonCentroid(int polygonIdx);
 void minMax(double* v1, double* v2, double* min, double* max);
 void Max(double* v1, double* v2, double* max);
 void Min(double* v1, double* v2, double* min);
-bool pointInPolygon(int polygonSize, double polygon[polygonSize][3], double pos[3]);
-void rayCast(int polygonSize, double polygon[polygonSize][3], int* intersections, int idxI, int idxIp1, double px, double py);
-bool vecPolygonIntersect(double point1[3], double point2[3], int polygonSize, double polygon[polygonSize][3]);
-bool segmentIntersection(double point1[3], double point2[3], int polygonSize, double polygon[polygonSize][3], int idxI, int idxIp1);
+bool pointInPolygon(int polyIdx, double pos[3], double** rpolygon);
+void rayCast(int polyIdx, int* intersections, int idxI, int idxIp1, double px, double py, double** rpolygon);
+bool vecPolygonIntersect(int polyIdx, double point1[3], double point2[3], double** rpolygon);
+bool segmentIntersection(int polyIdx, double point1[3], double point2[3], int idxI, int idxIp1, double** rpolygon);
 #endif

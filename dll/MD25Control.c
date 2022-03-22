@@ -66,3 +66,9 @@ void resetEncoders(void) {
 	writeI2C(2);
 	printf("Encoders have been reset\n");
 }
+
+void setMode(int mode) {
+	buffer[0] = 15;
+	buffer[1] = mode;
+	if(writeI2C(2) == -1) printf("Could not set mode\n");
+}

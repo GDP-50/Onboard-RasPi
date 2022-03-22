@@ -3,3 +3,4 @@ onboardenv/
 .vscode/
 __pycache__/
 c_dll.so
+test.c

@@ -5,6 +5,7 @@ double*** polygons;
 double** polyInfo;
 
 void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polygonCount][polygonMaxSize][3], int polySizes[polygonCount]) {
+    polyCount = polygonCount;
     polygons = (double***)malloc(polygonCount * sizeof(double**));
     if(!polygons) {
         printf("Could not allocate for polygons first dimension, exiting... \n");
@@ -22,6 +23,9 @@ void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polyg
             printf("Could not allocate for polygons third dimension, exiting... \n");
             exit(1);
             }
+            polygons[i][j][0] = py_polygons[i][j][0];
+            polygons[i][j][1] = py_polygons[i][j][1];
+            polygons[i][j][2] = py_polygons[i][j][2];
         }
     }
 
@@ -90,16 +94,20 @@ void Min(double* v1, double* v2, double* min) {
     *min = (*v1 <= *v2) ? *v1 : *v2; 
 }
 
-bool pointInPolygon(int polygonSize, double polygon[polygonSize][3], double pos[3]) {
+bool pointInPolygon(int polyIdx, double pos[3], double** rpolygon) {
+    double** polygon;
+    polygon = polygons[polyIdx];
+    if(!(rpolygon == NULL)) polygon = rpolygon;
+    int polygonSize = polyInfo[polyIdx][2];
     double px, py;
     px = pos[0];
     py = pos[1];
     int intersections;
     intersections = 0;
-    for(int i = 0; i < polygonSize - 1; i++) {
-        rayCast(polygonSize, polygon, &intersections, i, i+1, px, py);
+    for(int i = 0; i < (polygonSize) - 1; i++) {
+        rayCast(polyIdx, &intersections, i, i+1, px, py, rpolygon);
     }
-    rayCast(polygonSize, polygon, &intersections, polygonSize - 1, 0, px, py);
+    rayCast(polyIdx, &intersections, (polygonSize) - 1, 0, px, py, rpolygon);
     if(intersections % 2 == 0) {
         return false;
     } else {
@@ -107,7 +115,10 @@ bool pointInPolygon(int polygonSize, double polygon[polygonSize][3], double pos[
     }
 }
 
-void rayCast(int polygonSize, double polygon[polygonSize][3], int* intersections, int idxI, int idxIp1, double px, double py) {
+void rayCast(int polyIdx, int* intersections, int idxI, int idxIp1, double px, double py, double** rpolygon) {
+    double** polygon;
+    polygon = polygons[polyIdx];
+    if(!(rpolygon == NULL)) polygon = rpolygon;
     double x1, x2, y1, y2, xMin, xMax, yMin, yMax;
     x1 = polygon[idxI][0];
     y1 = polygon[idxI][1];
@@ -125,17 +136,24 @@ void rayCast(int polygonSize, double polygon[polygonSize][3], int* intersections
     }
 }
 
-bool vecPolygonIntersect(double point1[3], double point2[3], int polygonSize, double polygon[polygonSize][3]) {
+bool vecPolygonIntersect(int polyIdx, double point1[3], double point2[3], double** rpolygon) {
+    double** polygon;
+    polygon = polygons[polyIdx];
+    if(!(rpolygon == NULL)) polygon = rpolygon;
+    int polygonSize = polyInfo[polyIdx][2];
     for(int i = 0; i < polygonSize - 1; i++) {
-        if(segmentIntersection(point1, point2, polygonSize, polygon, i, i + 1)) return true;
+        if(segmentIntersection(polyIdx, point1, point2, i, i + 1, NULL)) return true;
     }
-    if(segmentIntersection(point1, point2, polygonSize, polygon, polygonSize - 1, 0)) return true;
+    if(segmentIntersection(polyIdx, point1, point2, polygonSize - 1, 0, NULL)) return true;
     return false;
 }
 
-bool segmentIntersection(double point1[3], double point2[3], int polygonSize, double polygon[polygonSize][3], int idxI, int idxIp1) {
+bool segmentIntersection(int polyIdx, double point1[3], double point2[3], int idxI, int idxIp1, double** rpolygon) {
     /* Vector a is caddy to golfer, vector b is polygon edge */
     /* x and y are the intersection point of the line segments */
+    double** polygon;
+    polygon = polygons[polyIdx];
+    if(!(rpolygon == NULL)) polygon = rpolygon;
     double x, y, ax1, ax2, ay1, ay2, bx1, bx2, by1, by2;
     double grad_a, grad_b;
     double ac, bc;
