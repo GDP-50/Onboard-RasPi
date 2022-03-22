@@ -1,13 +1,55 @@
 #include "polygons.h"
 
-void polygonCentroid(int polygonSize, double polygon[polygonSize][3], double pos[2]) {
+int polyCount;
+double*** polygons;
+double** polyInfo;
+
+void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polygonCount][polygonMaxSize][3], int polySizes[polygonCount]) {
+    polygons = (double***)malloc(polygonCount * sizeof(double**));
+    if(!polygons) {
+        printf("Could not allocate for polygons first dimension, exiting... \n");
+        exit(1);
+    }
+    for(int i = 0; i < polygonCount; i++) {
+        polygons[i] = (double**)malloc(polySizes[i] * sizeof(double*));
+        if(!polygons[i]) {
+        printf("Could not allocate for polygons second dimension, exiting... \n");
+        exit(1);
+        }   
+        for(int j = 0; j < polySizes[i]; j++) {
+            polygons[i][j] = (double*)malloc(3 * sizeof(double));
+            if(!polygons[i][j]) {
+            printf("Could not allocate for polygons third dimension, exiting... \n");
+            exit(1);
+            }
+        }
+    }
+
+    polyInfo = (double**)malloc(polygonCount * sizeof(double*));
+    if(!polyInfo) {
+        printf("Could not allocate for polyInfo first dimension, exiting... \n");
+        exit(1);
+    }
+    for(int i = 0; i < polyCount; i++) {
+        polyInfo[i] = (double*)malloc(3 * sizeof(double*));
+        if(!polyInfo[i]) {
+        printf("Could not allocate for polyInfo second dimension, exiting... \n");
+        exit(1);
+        }
+        polyInfo[i][2] = polySizes[i];
+        polygonCentroid(i);
+    }
+}
+
+void polygonCentroid(int polygonIdx) {
     //First calculate centroid (cx, cy) cz = 0.0
+    double** polygon = polygons[polygonIdx];
     double A, cxa, cya, cx, cy;
     double xi, yi, xip1, yip1;
     A = 0;
     cxa = 0;
     cya = 0;
-    for(int i = 0; i < polygonSize - 1; i++) {
+    for(int i = 0; i < polyInfo[polygonIdx][2] - 1; i++) {
         xi = polygon[i][0];
         yi = polygon[i][1];
         xip1 = polygon[i + 1][0];
@@ -16,8 +58,8 @@ void polygonCentroid(int polygonSize, double polygon[polygonSize][3], double pos
         cxa += (xi + xip1) * (xi*yip1 - xip1*yi);
         cya += (yi + yip1) * (xi*yip1 - xip1*yi);
     }
-    xi = polygon[polygonSize - 1][0];
-    yi = polygon[polygonSize - 1][1];
+    xi = polygon[(int)polyInfo[polygonIdx][2] - 1][0];
+    yi = polygon[(int)polyInfo[polygonIdx][2] - 1][1];
     xip1 = polygon[0][0];
     yip1 = polygon[0][1];
     A += 0.5 * (xi * yip1 - xip1 * yi);
@@ -26,8 +68,8 @@ void polygonCentroid(int polygonSize, double polygon[polygonSize][3], double pos
 
     cx = cxa / (6.0 * A);
     cy = cya / (6.0 * A);
-    pos[0] = cx;
-    pos[1] = cy;
+    polyInfo[polygonIdx][0] = cx;
+    polyInfo[polygonIdx][1] = cy;
 }
 
 void minMax(double* v1, double* v2, double* min, double* max) {

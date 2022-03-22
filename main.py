@@ -32,9 +32,8 @@ polyInfo[0][2] = float(greenSize.value)
 for i, bunker in enumerate(bunkers):
     polyInfo[i+1][2] = float(bunkerSizes[i])
 
-test = np.ndarray(shape=(2), dtype=c_double)
-for i, polygon in enumerate(polygons):
-    polygonCentroid(c_int(int(polyInfo[i][2])), polygon, polyInfo[i][0:2])
+""" for i, polygon in enumerate(polygons):
+    polygonCentroid(c_int(int(polyInfo[i][2])), polygon, polyInfo[i][0:2]) """
 
 
 

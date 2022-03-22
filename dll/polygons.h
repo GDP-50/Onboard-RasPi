@@ -4,7 +4,11 @@
 #include <math.h>
 #include <stdlib.h>
 typedef enum { false = 0, true = !false } bool;
-void polygonCentroid(int polygonSize, double polygon[polygonSize][3], double pos[2]);
+extern int polyCount;
+extern double*** polygons;
+extern double** polyInfo;
+void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polygonCount][polygonMaxSize][3], int polySizes[polygonCount]);
+void polygonCentroid(int polygonIdx);
 void minMax(double* v1, double* v2, double* min, double* max);
 void Max(double* v1, double* v2, double* max);
 void Min(double* v1, double* v2, double* min);

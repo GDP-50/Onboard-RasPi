@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-
-typedef enum { false = 0, true = !false } bool;
+#include "parseCourse.h"
 
 void loadCourse(const char * path, int* greenSize, int* bunkerCount, int bunkerSizes[128]) {
     for (int* val = bunkerSizes; val < (bunkerSizes + 128); val++) {

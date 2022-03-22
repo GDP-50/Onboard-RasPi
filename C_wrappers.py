@@ -53,10 +53,10 @@ encoderValues.argtypes = [POINTER(c_long), POINTER(c_long)]
 resetEncoders = c_funcs.resetEncoders
 
 ## POLYGON CENTROID ##
-polygonCentroid = c_funcs.polygonCentroid
+""" polygonCentroid = c_funcs.polygonCentroid
 polygonCentroid.argtypes = [c_int, 
                             ndpointer(dtype=c_double, ndim=2, flags='C_CONTIGUOUS'), 
-                            ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')]
+                            ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')] """
 
 ## POINT IN POLYGON ##
 pointInPolygon = c_funcs.pointInPolygon
