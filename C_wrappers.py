@@ -26,6 +26,13 @@ prepareCourse.argtypes = [c_char_p(),
                           ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
                           POINTER(c_double)]
 
+## LOAD POLYGONS ##
+loadPolygons = c_funcs.loadPolygons            
+loadPolygons.argtypes = [c_int,
+                         c_int,
+                         ndpointer(dtype=c_double, ndim=3, flags='C_CONTIGUOUS'),
+                         ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')]
+
 ## SETUP I2C ##
 setupI2C = c_funcs.setupI2C
 setupI2C.argtypes = [c_int]

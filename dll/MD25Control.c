@@ -72,3 +72,7 @@ void setMode(int mode) {
 	buffer[1] = mode;
 	if(writeI2C(2) == -1) printf("Could not set mode\n");
 }
+
+void setI2CSelect() {
+	
+}
