@@ -48,16 +48,40 @@ writeI2C = c_funcs.writeI2C
 writeI2C.argtypes = [c_int]
 writeI2C.restypes = [c_int]
 
-## SET MOTOR SPEED ##
+## SET MOTOR SPEED MD25 ##
 setMotorSpeed = c_funcs.setMotorSpeed
 setMotorSpeed.argtypes = [c_int, c_int]
+
+## SET MOTOR SPEED MD49 ##
+driveMotors = c_funcs.driveMotors
+driveMotors.argtypes = [c_char, c_char]
 
 ## ENCODER VALUES ##
 encoderValues = c_funcs.encoderValues
 encoderValues.argtypes = [POINTER(c_long), POINTER(c_long)]
 
-## RESET ENCODERS ##
+## ENCODER VALUES MD49 ##
+readEncoders = c_funcs.readEncoders
+readEncoders.argtypes = [POINTER(c_long), POINTER(c_long)]
+
+## RESET ENCODERS MD49 ##
 resetEncoders = c_funcs.resetEncoders
+
+## WRITE BYTES SERIAL ##
+writeBytes = c_funcs.writeBytes
+writeBytes.argtypes = [c_int]
+
+## READ BYTES SERIAL ##
+readBytes = c_funcs.readBytes
+readBytes.argtypes = [c_int]
+
+## SET MODE MD49 ##
+setMode = c_funcs.setMode
+setMode.argtypes = [c_char]
+
+## SET BUFFER MD49 ##
+setBuffer = c_funcs.setBuffer
+setBuffer.argtypes = [ndpointer(dtype=c_char, ndim=1, flags='C_CONTIGUOUS')]
 
 
 
