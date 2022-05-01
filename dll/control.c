@@ -79,12 +79,12 @@ void translateCaddy(double dist) {
     wheel_circumference = 2 * M_PI * WHEEL_RADIUS_M;
     encoderTarget = dist / wheel_circumference * 360;
     resetEncoders();
-    encoderValues(&encoder1, &encoder2);
-    setMotorSpeed(100, 100);
+    readEncoders(&encoder1, &encoder2);
+    driveMotors(100, 100);
     while(encoder1 < encoderTarget) {
         sleep(0.1);
     }
-    setMotorSpeed(0, 0);
+    driveMotors(0, 0);
 }
 
 void rotateCaddy(double angle) {
@@ -95,12 +95,12 @@ void rotateCaddy(double angle) {
     wheel_circumference = 2 * M_PI * WHEEL_RADIUS_M;
     encoderTarget = dist / wheel_circumference * 360;
     resetEncoders();
-    encoderValues(&encoder1, &encoder2);
-    setMotorSpeed(50, -50);
+    readEncoders(&encoder1, &encoder2);
+    driveMotors(50, -50);
     while(encoder1 < encoderTarget) {
         sleep(0.1);
     }
-    setMotorSpeed(0, 0);
+    driveMotors(0, 0);
 }
 
 

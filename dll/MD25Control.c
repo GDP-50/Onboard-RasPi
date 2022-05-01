@@ -60,14 +60,14 @@ void encoderValues(long* encoder1, long* encoder2) {
     }
 }
 
-void resetEncoders(void) {
+void resetMD25Encoders(void) {
 	buffer[0] = 16;												// Command register
 	buffer[1] = 32;												// command to set decoders back to zero
 	writeI2C(2);
 	printf("Encoders have been reset\n");
 }
 
-void setMode(int mode) {
+void setMD25Mode(int mode) {
 	buffer[0] = 15;
 	buffer[1] = mode;
 	if(writeI2C(2) == -1) printf("Could not set mode\n");

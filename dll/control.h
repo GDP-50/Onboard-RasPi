@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "polygons.h"
-#include "MD25Control.h"
+#include "MD49Control.h"
 #ifdef _WIN32
 #include <Windows.h>
 #else
