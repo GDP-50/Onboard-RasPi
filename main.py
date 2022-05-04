@@ -33,12 +33,10 @@ polyInfo = np.ndarray(shape=(1+bunkerCount.value, 3), dtype=c_double)
 polyInfo[0][2] = float(greenSize.value)
 for i, bunker in enumerate(bunkers):
     polyInfo[i+1][2] = float(bunkerSizes[i])
-polySizes = np.zeros(shape=(len(polygons),))
+polySizes = np.zeros(shape=(len(polygons),), dtype=c_int)
 for i, poly in enumerate(polyInfo):
     polySizes[i] = poly[2]
 loadPolygons(c_int(len(polygons)), c_int(maxPolygonSize), polygons, polySizes)
-
-
 
 
 

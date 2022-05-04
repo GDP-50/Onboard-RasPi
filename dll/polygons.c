@@ -11,12 +11,14 @@ void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polyg
         printf("Could not allocate for polygons first dimension, exiting... \n");
         exit(1);
     }
+    printf("Successfully allocated memory for %d polygons\n", polygonCount);
     for(int i = 0; i < polygonCount; i++) {
         polygons[i] = (double**)malloc(polySizes[i] * sizeof(double*));
         if(!polygons[i]) {
         printf("Could not allocate for polygons second dimension, exiting... \n");
         exit(1);
-        }   
+        }  
+        printf("Successfully allocated memory for %d points for polygon %d\n", polySizes[i], i+1);
         for(int j = 0; j < polySizes[i]; j++) {
             polygons[i][j] = (double*)malloc(3 * sizeof(double));
             if(!polygons[i][j]) {
@@ -28,6 +30,7 @@ void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polyg
             polygons[i][j][2] = py_polygons[i][j][2];
         }
     }
+    printf("Successfully finished allocation for polygons\n");
 
     polyInfo = (double**)malloc(polygonCount * sizeof(double*));
     if(!polyInfo) {
@@ -35,7 +38,7 @@ void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polyg
         exit(1);
     }
     for(int i = 0; i < polyCount; i++) {
-        polyInfo[i] = (double*)malloc(3 * sizeof(double*));
+        polyInfo[i] = (double*)malloc(3 * sizeof(double));
         if(!polyInfo[i]) {
         printf("Could not allocate for polyInfo second dimension, exiting... \n");
         exit(1);
@@ -43,6 +46,7 @@ void loadPolygons(int polygonCount, int polygonMaxSize, double py_polygons[polyg
         polyInfo[i][2] = polySizes[i];
         polygonCentroid(i);
     }
+    printf("Successfully allocated for polyInfo\n");
 }
 
 void polygonCentroid(int polygonIdx) {
