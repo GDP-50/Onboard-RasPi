@@ -4,6 +4,7 @@ double xIncrement = -1;
 double yIncrement = -1;
 double target[3];
 bool activeTarget = false;
+bool caddyHasRotated = false;
 
 void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation) {
     double dist;
@@ -48,14 +49,14 @@ void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation)
             target[2] = golferPos[2];
         }
     } else {
-        reachTarget(caddyPos, caddyRotation);
+        reachTarget(caddyPos, &caddyRotation);
     }
 }
 
-void reachTarget(double caddyPos[3], double caddyRotation) {
+void reachTarget(double caddyPos[3], double* caddyRotation) {
     double caddyDir[3], chord[3];
     double** caddyRotationMatrix;
-    caddyRotationMatrix = gen3x3RotationMatrix_Z(deg2rad(caddyRotation));
+    caddyRotationMatrix = gen3x3RotationMatrix_Z(deg2rad(*caddyRotation));
     chord[0] = target[0] - caddyPos[0];
     chord[1] = target[1] - caddyPos[1];
     chord[2] = target[2] - caddyPos[2];
@@ -70,6 +71,7 @@ void reachTarget(double caddyPos[3], double caddyRotation) {
     /* Translate caddy */
     translateCaddy(dist);
     activeTarget = false;
+    (*caddyRotation) += angle;
 }
 
 void translateCaddy(double dist) {
@@ -101,6 +103,7 @@ void rotateCaddy(double angle) {
         sleep(0.1);
     }
     driveMotors(0, 0);
+    caddyHasRotated = true;
 }
 
 
@@ -248,4 +251,12 @@ double deg2rad(double deg) {
     double theta;
     theta =  deg * M_PI / 180;
     return theta;
+}
+
+bool getHasRotated() {
+    return caddyHasRotated;
+}
+
+void setHasRotated(bool hasRotated) {
+    caddyHasRotated = hasRotated;
 }

@@ -14,7 +14,7 @@
 #define WHEEL_BASE_M 0.6
 #define WHEEL_RADIUS_M 0.115
 void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation);
-void reachTarget(double caddyPos[3], double caddyRotation);
+void reachTarget(double caddyPos[3], double* caddyRotation);
 double meters2deg(double meters);
 void pathFind(int polyIdx, double caddyPos[3], double targetPos[3]);
 void matrixVectorMultiplication(int n, double vec[n], double** matrix, double outVec[n]);
@@ -24,4 +24,6 @@ double angleBetweenVecN(int n, double vec1[3], double vec2[3]);
 double deg2rad(double deg);
 void translateCaddy(double dist);
 void rotateCaddy(double theta);
+bool getHasRotated();
+void setHasRotated(bool hasRotated);
 #endif

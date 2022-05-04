@@ -104,3 +104,7 @@ caddyControl = c_funcs.caddyControl
 caddyControl.argtypes = [ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
                          ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS'),
                          c_double]
+
+## CADDY HAS ROTATED ##
+getCaddyHasRotated = c_funcs.getHasRotated
+getCaddyHasRotated.restype = c_bool                    

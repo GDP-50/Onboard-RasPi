@@ -45,6 +45,7 @@ loadPolygons(c_int(len(polygons)), c_int(maxPolygonSize), polygons, polySizes)
 client_socket, server_socket = setupBluetoothListener()
 while True:
     caddyHeading = None
+    caddyHasRotated = getCaddyHasRotated()
     gpsData = receiveGPS(client_socket)
     if not gpsData:
         break
@@ -59,12 +60,23 @@ while True:
         time.sleep(2)
         setMotorSpeed(0, 0)
         caddyPosX2, caddyPosY2 = get_gps()
-        dcpx = caddyPosX2 - caddyPosX
-        dcpy = caddyPosY2 - caddyPosY
+        caddyHeading = setCaddyHeading(caddyPosX, caddyPosY, caddyPosX2, caddyPosY2)
+        print("Heading is %f degrees" % np.rad2deg(caddyHeading))
+
+    if not caddyHasRotated:
+        if abs(prevCaddyPosX - caddyPosX) >= 0.001 or abs(prevCaddyPosY - caddyPosY) >= 0.001:
+                caddyHeading = setCaddyHeading(prevCaddyPosX, prevCaddyPosY, caddyPosX, caddyPosY)
+
+    prevCaddyPosX = caddyPosX
+    prevCaddyPosY = caddyPosY
+
+    caddyControl(gpos, cpos, caddyHeading)
+
+    def setCaddyHeading(px1, py1, px2, py2):
+        dcpx = px2 - px1
+        dcpy = py2 - py1
         dvec = np.array([dcpx, dcpy])
         dvec /= np.linalg.norm(dvec)
         unitVec = np.array([0,1])
         caddyHeading = np.acos(np.dot(dvec, unitVec))
-        print("Heading is %f degrees" % np.rad2deg(caddyHeading))
-
-    caddyControl(gpos, cpos, caddyHeading)
+        return caddyHeading
