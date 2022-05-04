@@ -4,7 +4,7 @@ double xIncrement = -1;
 double yIncrement = -1;
 double target[3];
 bool activeTarget = false;
-bool caddyHasRotated = false;
+bool caddyHasRotated = true;
 
 void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation) {
     double dist;

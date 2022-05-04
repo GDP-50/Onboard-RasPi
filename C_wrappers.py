@@ -107,4 +107,8 @@ caddyControl.argtypes = [ndpointer(dtype=c_double, ndim=1, flags='C_CONTIGUOUS')
 
 ## CADDY HAS ROTATED ##
 getCaddyHasRotated = c_funcs.getHasRotated
-getCaddyHasRotated.restype = c_bool                    
+getCaddyHasRotated.restype = c_bool        
+
+## SET CADDY HAS ROTATED ##
+setCaddyHasRotated = c_funcs.setHasRotated
+setCaddyHasRotated.argtypes = [c_bool]
