@@ -50,6 +50,7 @@ while True:
     if not gpsData:
         break
     golferPosX, golferPosY = parseGPS(gpsData)
+    print("Received: %f %f" % (golferPosX, golferPosY))
     gpos = np.array([golferPosX, golferPosY, 0])
     time.sleep(0.5)
 
@@ -70,7 +71,7 @@ while True:
     prevCaddyPosX = caddyPosX
     prevCaddyPosY = caddyPosY
 
-    caddyControl(gpos, cpos, caddyHeading)
+    #caddyControl(gpos, cpos, caddyHeading)
 
     def setCaddyHeading(px1, py1, px2, py2):
         dcpx = px2 - px1
