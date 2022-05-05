@@ -38,44 +38,55 @@ for i, poly in enumerate(polyInfo):
     polySizes[i] = poly[2]
 loadPolygons(c_int(len(polygons)), c_int(maxPolygonSize), polygons, polySizes)
 
-
+def setCaddyHeading(px1, py1, px2, py2):
+    dcpx = px2 - px1
+    dcpy = py2 - py1
+    dvec = np.array([dcpx, dcpy])
+    dvec /= np.linalg.norm(dvec)
+    unitVec = np.array([0,1])
+    caddyHeading = np.arccos(np.dot(dvec, unitVec))
+    return caddyHeading
 
 client_socket, server_socket = setupBluetoothListener()
+testBTdata = receiveGPS(client_socket)
+print(testBTdata)
+
+
+def init_caddy():
+    caddyPosX, caddyPosY = get_gps()
+    setMotorSpeed(100, 100)
+    time.sleep(2)
+    setMotorSpeed(0, 0)
+    caddyPosX2, caddyPosY2 = get_gps()
+    caddyHeading = setCaddyHeading(caddyPosX, caddyPosY, caddyPosX2, caddyPosY2)
+    return caddyPosX2, caddyPosY2, caddyHeading
+
+cx1, cy1, rotation = init_caddy()
+
 while True:
-    caddyHeading = None
-    caddyHasRotated = getCaddyHasRotated()
     gpsData = receiveGPS(client_socket)
     if not gpsData:
+        print("Didn't receive, waiting...")
         break
     golferPosX, golferPosY = parseGPS(gpsData)
-    print("Received: %f %f" % (golferPosX, golferPosY))
+    if golferPosX is None:
+        continue
+    #print("Received: %f %f" % (golferPosX, golferPosY))
     gpos = np.array([golferPosX, golferPosY, 0])
-    time.sleep(0.5)
+    cpos = np.array([cx1, cy1, 0])
+    rel = cpos - gpos
+    rel_diff = np.linalg.norm(rel)
+    rel_diff *= 111194
+    print("Difference in meters: %f" % rel_diff)
+    #caddyControl(gpos, cpos, rotation)
+    cx2, cy2 = get_gps()
+    if not getCaddyHasRotated():
+        if abs(cx2 - cx1) >= 0.001 or abs(cy2 - cy1) >= 0.001:
+                caddyHeading = setCaddyHeading(cx2, cy2, cx1, cy1)
+    setCaddyHasRotated(False)
+    cx1 = cx2
+    cy1 = cy2
+    
 
-    caddyPosX, caddyPosY = get_gps()
-    cpos = np.array([caddyPosX, caddyPosY, 0])
-    if caddyHeading is None:
-        setMotorSpeed(100, 100)
-        time.sleep(2)
-        setMotorSpeed(0, 0)
-        caddyPosX2, caddyPosY2 = get_gps()
-        caddyHeading = setCaddyHeading(caddyPosX, caddyPosY, caddyPosX2, caddyPosY2)
-        print("Heading is %f degrees" % np.rad2deg(caddyHeading))
 
-    if not caddyHasRotated:
-        if abs(prevCaddyPosX - caddyPosX) >= 0.001 or abs(prevCaddyPosY - caddyPosY) >= 0.001:
-                caddyHeading = setCaddyHeading(prevCaddyPosX, prevCaddyPosY, caddyPosX, caddyPosY)
 
-    prevCaddyPosX = caddyPosX
-    prevCaddyPosY = caddyPosY
-
-    #caddyControl(gpos, cpos, caddyHeading)
-
-    def setCaddyHeading(px1, py1, px2, py2):
-        dcpx = px2 - px1
-        dcpy = py2 - py1
-        dvec = np.array([dcpx, dcpy])
-        dvec /= np.linalg.norm(dvec)
-        unitVec = np.array([0,1])
-        caddyHeading = np.acos(np.dot(dvec, unitVec))
-        return caddyHeading
