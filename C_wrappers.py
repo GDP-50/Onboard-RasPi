@@ -112,3 +112,15 @@ getCaddyHasRotated.restype = c_bool
 ## SET CADDY HAS ROTATED ##
 setCaddyHasRotated = c_funcs.setHasRotated
 setCaddyHasRotated.argtypes = [c_bool]
+
+## MD49 SOFTWARE VERSION ##
+MD49SoftwareVersion = c_funcs.MD49SoftwareVersion
+
+## SETUP MD49 SERIAL ##
+MD49SerialInit = c_funcs.MD49SerialInit
+
+## MD49 VI ##
+MD49VI = c_funcs.MD49VI
+
+## END MD49 SERIAL ##
+endMD49Serial = c_funcs.endMD49Serial

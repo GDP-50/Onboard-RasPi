@@ -15,10 +15,11 @@ void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation)
     cx = caddyPos[0]; cy = caddyPos[1]; cz = caddyPos[2];
     dx = gx - cx; dy = gy - cy; dz = gz - cz;
     dist = sqrt(pow(dx, 2.0) + pow(dy, 2.0) + pow(dz, 2.0));
+    printf("Dist in c is %f\n", dist * 111194);
     /* Check if the caddy is already trying to reach somewhere */
     if(!activeTarget) {
     /* Check if caddy is already close to golfer */
-        if(dist > meters2deg(5)) return;
+        if(dist < meters2deg(5)) return;
         /* 
         Now check if golfer in in no go zone 
         If it is then do nothing. 
@@ -48,12 +49,14 @@ void caddyControl(double golferPos[3], double caddyPos[3], double caddyRotation)
             target[1] = golferPos[1];
             target[2] = golferPos[2];
         }
+        activeTarget = true;
     } else {
         reachTarget(caddyPos, &caddyRotation);
     }
 }
 
 void reachTarget(double caddyPos[3], double* caddyRotation) {
+    printf("Trying to reach target");
     double caddyDir[3], chord[3];
     double** caddyRotationMatrix;
     caddyRotationMatrix = gen3x3RotationMatrix_Z(deg2rad(*caddyRotation));
@@ -81,11 +84,10 @@ void translateCaddy(double dist) {
     wheel_circumference = 2 * M_PI * WHEEL_RADIUS_M;
     encoderTarget = dist / wheel_circumference * 360;
     resetEncoders();
-    readEncoders(&encoder1, &encoder2);
-    driveMotors(100, 100);
     while(encoder1 < encoderTarget) {
-        sleep(0.1);
+        driveMotors(200, 200);
         guardOverCurrent();
+        readEncoders(&encoder1, &encoder2);
     }
     driveMotors(0, 0);
 }
@@ -98,11 +100,10 @@ void rotateCaddy(double angle) {
     wheel_circumference = 2 * M_PI * WHEEL_RADIUS_M;
     encoderTarget = dist / wheel_circumference * 360;
     resetEncoders();
-    readEncoders(&encoder1, &encoder2);
-    driveMotors(50, -50);
     while(encoder1 < encoderTarget) {
-        sleep(0.1);
+        driveMotors(128 +50, 128 -50);
         guardOverCurrent();
+        readEncoders(&encoder1, &encoder2);
     }
     driveMotors(0, 0);
     caddyHasRotated = true;

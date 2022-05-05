@@ -54,6 +54,8 @@ print(testBTdata)
 
 def init_caddy():
     caddyPosX, caddyPosY = get_gps()
+    caddyPosX = float(caddyPosX)
+    caddyPosY = float(caddyPosY)
     setMotorSpeed(100, 100)
     time.sleep(2)
     setMotorSpeed(0, 0)
@@ -77,8 +79,8 @@ while True:
     rel = cpos - gpos
     rel_diff = np.linalg.norm(rel)
     rel_diff *= 111194
-    print("Difference in meters: %f" % rel_diff)
-    #caddyControl(gpos, cpos, rotation)
+    #print("Difference in meters: %f" % rel_diff)
+    caddyControl(gpos, cpos, rotation)
     cx2, cy2 = get_gps()
     if not getCaddyHasRotated():
         if abs(cx2 - cx1) >= 0.001 or abs(cy2 - cy1) >= 0.001:

@@ -56,19 +56,7 @@ gps.flushInput()
 gps_data = gps.readline()
 print(gps_data)
 
-""" try:
-    while gps_data:
-        line = gps.readline().strip()
-        line = line.decode()
-        if re.match("^\$GPRMC", line):
-            msg = NMEAReader.parse(line)
-            try:
-                print("Lat: %f" % msg.lat)
-                print("Lon: %f" % msg.lon)
-            except:
-                print("not connected yet")
-except KeyboardInterrupt:
-    print("Interrupted") """
+
 
     
 def get_gps():
@@ -92,3 +80,18 @@ def parseGPS(data):
         return float(lat), float(lon)
     else:
         return None, None
+
+if __name__ == "__main__":
+    try:
+        while gps_data:
+            line = gps.readline().strip()
+            line = line.decode()
+            if re.match("^\$GPRMC", line):
+                msg = NMEAReader.parse(line)
+                try:
+                    print("Lat: %f" % msg.lat)
+                    print("Lon: %f" % msg.lon)
+                except:
+                    print("not connected yet")
+    except KeyboardInterrupt:
+        print("Interrupted")

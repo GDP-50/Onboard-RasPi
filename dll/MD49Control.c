@@ -10,13 +10,14 @@ union encoder {										// To store the encoder values
 } encoder1, encoder2;
 
 void MD49SerialInit() {
-    char *portName = "/dev/tySS0";
+    char *portName = "/dev/ttyS0";
     struct termios options;	
 
     fd = open(portName, O_RDWR | O_NOCTTY);				// Open port for read and write not making it a controlling terminal
 	if (fd == -1)
 	{
-		perror("openPort: Unable to open port ");		// If open() returns an error
+		perror("openPort: Unable to open port ");	
+		exit(1);	// If open() returns an error
 	} 
 	tcgetattr(fd, &options);
 	cfsetispeed(&options, BAUDRATE);						// Set baud rate
@@ -33,14 +34,18 @@ void writeBytes(int count) {
 		close(fd);															// Close port if there is an error
 		exit(1);
 	}
+	printf("Successfully wrote %d bytes\n", count);
+	fflush(stdout);
 }
 
 void readBytes(int count) {
-	if (read(fd, buffer, count) == -1) {								// Read back data into buffer
+	int rd = read(fd, buffer, count);
+	if (rd == -1) {								// Read back data into buffer
 		perror("Error reading ");
 		close(fd);															// Close port if there is an error
 		exit(1);
 	}
+	printf("Successfully read %d bytes\n", count);
 }
 
 void driveMotors(char speed1, char speed2) {
@@ -68,11 +73,12 @@ void setMode(char mode) {
 }
 
 void MD49SoftwareVersion() {
+	printf("Attempting to get software version of MD49\n");
     buffer[0] = 0;															
 	buffer[1] = 0x29;		
     writeBytes(2);
 	readBytes(1);
-	printf("MD49 Software v: %d \n",buffer[0]);
+	printf("MD49 Software v: %u \n",buffer[0]);
 }
 
 void resetEncoders() {
@@ -139,4 +145,24 @@ void guardOverCurrent() {
 		printf("Shutting down due to overcurrent\n");
 		exit(1);
 	}
+}
+
+void MD49VI() {
+	int voltage, current1, current2;
+	buffer[0] = 0;
+	buffer[1] = 0x2C;
+	writeBytes(2);
+	usleep(10000);
+	readBytes(3);
+	voltage = buffer[0];
+	current1 = buffer[1];
+	current2 = buffer[2];
+	printf("Voltage: %d, current1: %d, current2: %d\n", voltage, current1, current2);
+}
+
+void endMD49Serial() {
+	if(close(fd) == -1) {
+		printf("Could not close port\n");
+	}
+	printf("Serial port closed successfully\n");
 }
