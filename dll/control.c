@@ -85,7 +85,7 @@ void translateCaddy(double dist) {
     driveMotors(100, 100);
     while(encoder1 < encoderTarget) {
         sleep(0.1);
-        
+        guardOverCurrent();
     }
     driveMotors(0, 0);
 }
@@ -102,6 +102,7 @@ void rotateCaddy(double angle) {
     driveMotors(50, -50);
     while(encoder1 < encoderTarget) {
         sleep(0.1);
+        guardOverCurrent();
     }
     driveMotors(0, 0);
     caddyHasRotated = true;
