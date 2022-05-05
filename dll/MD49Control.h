@@ -12,6 +12,7 @@
 #include <errno.h>
 
 #define BAUDRATE B9600
+#define MAX_CURRENT_A 20
 void MD49SerialInit();
 void writeBytes(int count);
 void readBytes(int count);
@@ -21,4 +22,5 @@ void MD49SoftwareVersion();
 void resetEncoders();
 void setBuffer(int len, char buf[len]);
 void readEncoders(long int* encoder1val, long int* encoder2val);
+void guardOverCurrent();
 #endif

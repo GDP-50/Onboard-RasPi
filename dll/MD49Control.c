@@ -119,3 +119,24 @@ void readEncoders(long int* encoder1val, long int* encoder2val) {
 	
 	fflush(stdout);									
 }
+
+void guardOverCurrent() {
+	int current1, current2;
+	buffer[0] = 0;
+	buffer[1] = 0x27;
+	writeBytes(2);
+	readBytes(1);
+	current1 = buffer[0];
+	printf("Current 1 is %d'n", current1);
+	buffer[0] = 0;
+	buffer[1] = 0x28;
+	writeBytes(2);
+	readBytes(1);
+	current2 = buffer[0];
+	printf("Current 2 is %d'n", current2);
+	if(current1 >= MAX_CURRENT_A || current2 >= MAX_CURRENT_A) {
+		driveMotors(0, 0);
+		printf("Shutting down due to overcurrent\n");
+		exit(1);
+	}
+}

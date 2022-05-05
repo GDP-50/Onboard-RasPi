@@ -85,6 +85,7 @@ void translateCaddy(double dist) {
     driveMotors(100, 100);
     while(encoder1 < encoderTarget) {
         sleep(0.1);
+        
     }
     driveMotors(0, 0);
 }
